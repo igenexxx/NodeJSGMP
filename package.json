@@ -5,14 +5,18 @@
   "main": "index.js",
   "scripts": {
     "task1": "nodemon task1/index.js",
-    "task2": "nodemon task2/index.js"
+    "build:task2": "babel task2/index.js -d task2/dist",
+    "task2": "npm run build:task2 && nodemon task2/dist/index.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/igenexxx/NodeJSGMP.git"
   },
+  "type": "module",
   "nodemonConfig": {
-    "ignore": ["task2/json/*.json"]
+    "ignore": [
+      "task2/json/*.json"
+    ]
   },
   "keywords": [],
   "author": "",
@@ -22,6 +26,9 @@
   },
   "homepage": "https://github.com/igenexxx/NodeJSGMP#readme",
   "devDependencies": {
+    "@babel/cli": "^7.17.10",
+    "@babel/core": "^7.17.10",
+    "@babel/preset-env": "^7.17.10",
     "nodemon": "^2.0.16"
   },
   "dependencies": {
