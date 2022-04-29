@@ -11,6 +11,9 @@
     "type": "git",
     "url": "git+https://github.com/igenexxx/NodeJSGMP.git"
   },
+  "nodemonConfig": {
+    "ignore": ["task2/json/*.json"]
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -20,5 +23,8 @@
   "homepage": "https://github.com/igenexxx/NodeJSGMP#readme",
   "devDependencies": {
     "nodemon": "^2.0.16"
+  },
+  "dependencies": {
+    "csvtojson": "^2.0.10"
   }
 }
