@@ -1,0 +1,23 @@
+{
+  "name": "nodejsgmp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/igenexxx/NodeJSGMP.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/igenexxx/NodeJSGMP/issues"
+  },
+  "homepage": "https://github.com/igenexxx/NodeJSGMP#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.16"
+  }
+}
