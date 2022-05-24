@@ -1,7 +1,9 @@
 import type { Request, Response } from 'express';
+import type { ValidatedRequest } from 'express-joi-validation';
 import { v4 as uuidv4 } from 'uuid';
 
 import type { SuggestRequestQueryModel, UserModel } from '../models/User';
+import type { UserRequestSchemaModel } from '../validators/user';
 
 const db: { users: UserModel[] } = {
   users: [
@@ -43,7 +45,7 @@ const db: { users: UserModel[] } = {
   ],
 };
 
-const create = (req: Request, res: Response) => {
+const create = (req: ValidatedRequest<UserRequestSchemaModel>, res: Response) => {
   const { login, age, password }: UserModel = req.body;
 
   if (!(login && password && age)) {
@@ -73,9 +75,9 @@ const update = (req: Request, res: Response) => {
   if (userToUpdate) {
     const updatedUser: UserModel = {
       ...userToUpdate,
-      ...(login && { login }),
-      ...(age && { age }),
-      ...(password && { password }),
+      login,
+      password,
+      age,
     };
 
     res.status(200).json({ id: updatedUser.id, message: 'User successfully updated' });
