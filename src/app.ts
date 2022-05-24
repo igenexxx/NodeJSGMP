@@ -1,8 +1,11 @@
-import { abc, ccc } from './hey';
+import express from 'express';
 
-const a = 1;
+import { userRoutes } from './routes/user';
 
-console.log(a + 3);
-console.log(a + 5);
-console.log(a + abc);
-console.log(ccc + abc);
+const app = express();
+
+app.disable('x-powered-by');
+app.use(express.json());
+app.use('/api/1.0/user', userRoutes);
+
+export { app };
