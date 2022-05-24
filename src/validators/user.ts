@@ -6,7 +6,7 @@ import type { UserModel } from '../models/User';
 
 export const validator = createValidator();
 
-export const querySchema = Joi.object<UserModel>({
+export const bodySchema = Joi.object<UserModel>({
   login: Joi.string().regex(/^\w[\w\d_$-]{3,255}/i),
   password: Joi.string().alphanum().min(8).max(255),
   age: Joi.number().min(4).max(130),
