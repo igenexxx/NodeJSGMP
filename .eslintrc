@@ -3,7 +3,8 @@
   "extends": ["plugin:@typescript-eslint/recommended", "prettier"],
   "parserOptions": {
     "ecmaVersion": 2020,
-    "sourceType": "module"
+    "sourceType": "module",
+    "project": ["./tsconfig.json"]
   },
   "plugins": ["simple-import-sort", "unused-imports"],
   "rules": {
@@ -56,10 +57,13 @@
     ],
     "no-debugger": 1,
     // Possible errors
-    "comma-dangle": [
-      2,
-      "never"
-    ],
+    "comma-dangle": ["error", {
+      "arrays": "only-multiline",
+      "objects": "only-multiline",
+      "imports": "never",
+      "exports": "never",
+      "functions": "never"
+    }],
     "no-cond-assign": [
       2,
       "always"
@@ -236,7 +240,7 @@
     ],
     "indent": [
       2,
-      4,
+      2,
       {
         "SwitchCase": 1
       }
@@ -249,7 +253,7 @@
       {
         "ignoreUrls": true,
         "ignoreComments": false,
-        "ignorePattern": "^\\s*(const|let|var)\\s+\\w+\\s+\\=\\s+\\/.*\\/(|i|g|m|ig|im|gm|igm);?$"
+        "ignorePattern": "^\\s*(const|let|var)\\s+\\w[\\w\\d_$]+\\s+=\\s+\\/.*\\/[igm];?$"
       }
     ],
     "max-nested-callbacks": [
