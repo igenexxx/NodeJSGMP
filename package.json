@@ -11,7 +11,7 @@
     "test:watch": "cross-env NODE_ENV=test jest --watch",
     "start:cloud": "cross-env NODE_ENV=development nodemon src/index.ts",
     "start:local": "cross-env NODE_ENV=local nodemon src/index.ts",
-    "start:inspect": "nodemon --inspect-brk src/index.ts"
+    "start:inspect": "cross-env NODE_ENV=local nodemon --inspect-brk src/index.ts"
   },
   "repository": {
     "type": "git",
@@ -56,6 +56,7 @@
   },
   "dependencies": {
     "config": "^3.3.7",
+    "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "express-joi-validation": "^5.0.1",
     "inversify": "^6.0.1",

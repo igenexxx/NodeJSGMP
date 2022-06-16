@@ -1,7 +1,7 @@
 // TODO: currently esm doesn't support
 export default {
   database: {
-    database: 'epam-node-test',
+    database: process.env.DB_NAME,
     host: process.env.DB_HOST,
     dialect: 'postgres',
     username: process.env.DB_USERNAME,
