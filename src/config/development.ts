@@ -1,3 +1,4 @@
+// TODO: currently esm doesn't support
 export default {
   database: {
     database: 'epam-node-test',

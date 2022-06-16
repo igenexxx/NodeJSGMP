@@ -4,5 +4,13 @@ import { Sequelize } from 'sequelize';
 
 import config from '../config/local';
 
+// TODO: find another config resolver that works with ESM
 // export const sequelize = new Sequelize(config.get('database'));
-export const sequelize = new Sequelize(config.database as Options);
+
+const sequelize = new Sequelize(config.database as Options);
+
+(async () => {
+  await sequelize.sync();
+})();
+
+export { sequelize };
