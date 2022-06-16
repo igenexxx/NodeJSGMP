@@ -1,5 +1,5 @@
 import type { CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
-import { BOOLEAN, INTEGER, Model, STRING, UUIDV4 } from 'sequelize';
+import { BOOLEAN, INTEGER, Model, STRING, UUID, UUIDV4 } from 'sequelize';
 
 import { sequelize } from '../initialization';
 import type { UserModel } from '../interfaces/User';
@@ -16,7 +16,7 @@ User.init(
   {
     id: {
       primaryKey: true,
-      type: UUIDV4,
+      type: UUID,
       defaultValue: UUIDV4,
     },
     login: {
