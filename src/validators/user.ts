@@ -2,7 +2,7 @@ import type { ContainerTypes, ValidatedRequestSchema } from 'express-joi-validat
 import { createValidator } from 'express-joi-validation';
 import * as Joi from 'joi';
 
-import type { UserModel } from '../models/User';
+import type { UserModel } from '../interfaces/User';
 
 export const validator = createValidator();
 

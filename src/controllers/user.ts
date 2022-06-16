@@ -1,8 +1,8 @@
 import type { Request, Response } from 'express';
 import type { ValidatedRequest } from 'express-joi-validation';
-import { v4 as uuidv4 } from 'uuid';
 
-import type { SuggestRequestQueryModel, UserModel } from '../models/User';
+import type { SuggestRequestQueryModel, UserModel } from '../interfaces/User';
+import { User } from '../models/User';
 import type { UserRequestSchemaModel } from '../validators/user';
 
 const db: { users: UserModel[] } = {
@@ -45,24 +45,31 @@ const db: { users: UserModel[] } = {
   ],
 };
 
-const create = (req: ValidatedRequest<UserRequestSchemaModel>, res: Response) => {
+const getAll = async (req: Request, res: Response) => {
+  try {
+    const users = await User.findAll();
+
+    if (users.length) {
+      res.status(200).json({ users });
+    } else {
+      res.status(404).json({ message: 'Users not found' });
+    }
+  } catch (e) {
+    res.status(500).json({ message: 'Something went wrong' });
+  }
+};
+
+const create = async (req: ValidatedRequest<UserRequestSchemaModel>, res: Response) => {
   const { login, age, password }: UserModel = req.body;
 
-  if (!(login && password && age)) {
-    res.status(400).json({ message: 'Please provide all required fields' });
-
-    return;
-  }
-
   const user: UserModel = {
-    id: uuidv4(),
     login,
     password,
-    age,
+    age: +age,
     isDeleted: false,
   };
 
-  db.users = [...db.users, user];
+  await User.create(user);
 
   res.status(201).json({ id: user.id, message: 'User successfully created' });
 };
@@ -104,4 +111,4 @@ const suggest = (req: Request, res: Response) => {
   res.status(200).json({ users: suggestedUsers });
 };
 
-export { create, update, remove, suggest };
+export { getAll, create, update, remove, suggest };

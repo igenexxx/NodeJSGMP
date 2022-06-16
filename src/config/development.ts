@@ -1,0 +1,10 @@
+export default {
+  database: {
+    database: 'epam-node-test',
+    host: process.env.DB_HOST,
+    dialect: 'postgres',
+    username: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
+    logging: console.log,
+  },
+};
