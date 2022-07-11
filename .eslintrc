@@ -1,6 +1,6 @@
 {
   "parser": "@typescript-eslint/parser",
-  "extends": ["plugin:@typescript-eslint/recommended", "prettier"],
+  "extends": ["plugin:@typescript-eslint/recommended", "prettier", "plugin:node/recommended"],
   "parserOptions": {
     "ecmaVersion": 2020,
     "sourceType": "module",
@@ -62,7 +62,7 @@
       "objects": "only-multiline",
       "imports": "never",
       "exports": "never",
-      "functions": "never"
+      "functions": "only-multiline"
     }],
     "no-cond-assign": [
       2,
@@ -193,7 +193,7 @@
     "no-undef": 2,
     "no-unused-vars": 2,
     // Node.js
-    "callback-return": 2,
+//    "callback-return": 2,
     "no-mixed-requires": 2,
     "no-path-concat": 2,
     "no-sync": 2,
@@ -418,7 +418,16 @@
           ["^"] // other
         ]
       }
-    ]
+    ],
+    "node/prefer-global/buffer": ["error", "always"],
+    "node/prefer-global/console": ["error", "always"],
+    "node/prefer-global/process": ["error", "always"],
+    "node/prefer-global/url-search-params": ["error", "always"],
+    "node/prefer-global/url": ["error", "always"],
+    "node/prefer-promises/dns": "error",
+    "node/prefer-promises/fs": "error",
+    "node/no-unsupported-features/es-syntax": ["warn", { "ignores": ["modules"], "version": ">=16.0.0" }],
+    "node/no-missing-import": "off"
   },
   "globals": {
     "$": true,
