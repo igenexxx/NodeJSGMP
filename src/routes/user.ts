@@ -1,13 +1,20 @@
 import { Router } from 'express';
 
-import { create, remove, suggest, update } from '../controllers/user';
+import { myContainer } from '../config/inversify.config';
+import { API_PREFIX_V1 } from '../config/router.config';
+import { UserController } from '../controllers/user';
 import { bodySchema, validator } from '../validators/user';
 
 const router = Router();
 
-router.post('/', validator.body(bodySchema), create);
-router.put('/:id', validator.body(bodySchema), update);
-router.get('/suggest', suggest);
-router.delete('/:id', remove);
+const userController = myContainer.get(UserController);
 
-export { router as userRoutes };
+router.post('/', validator.body(bodySchema), userController.create);
+router.get('/', userController.getAll);
+router.put('/:id', validator.body(bodySchema), userController.update);
+router.get('/suggest', userController.suggest);
+router.delete('/:id', userController.remove);
+
+const userRoutePath = `${API_PREFIX_V1}/user`;
+
+export { router as userRoutes, userRoutePath };

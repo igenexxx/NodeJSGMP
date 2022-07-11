@@ -1,107 +1,77 @@
-import type { Request, Response } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import type { ValidatedRequest } from 'express-joi-validation';
-import { v4 as uuidv4 } from 'uuid';
+import { inject, injectable } from 'inversify';
 
-import type { SuggestRequestQueryModel, UserModel } from '../models/User';
+import type { SuggestRequestQueryModel, UserModel } from '../interfaces/User';
+import { NotFoundError } from '../services/error-handlers.service';
+import { UserService } from '../services/user.service';
 import type { UserRequestSchemaModel } from '../validators/user';
 
-const db: { users: UserModel[] } = {
-  users: [
-    {
-      id: '1',
-      password: '1u23',
-      age: 5,
-      login: 'Sasha',
-      isDeleted: false,
-    },
-    {
-      id: '2',
-      password: '1e23',
-      age: 25,
-      login: 'Senya',
-      isDeleted: false,
-    },
-    {
-      id: '3',
-      password: '1c23',
-      age: 35,
-      login: 'Sonya',
-      isDeleted: false,
-    },
-    {
-      id: '4',
-      password: '12b3',
-      age: 15,
-      login: 'Sergey',
-      isDeleted: false,
-    },
-    {
-      id: '4',
-      password: '123a',
-      age: 25,
-      login: 'Sveta',
-      isDeleted: false,
-    },
-  ],
-};
+@injectable()
+export class UserController {
+  constructor(@inject(UserService) private userService: UserService) {}
 
-const create = (req: ValidatedRequest<UserRequestSchemaModel>, res: Response) => {
-  const { login, age, password }: UserModel = req.body;
+  getAll = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const users = await this.userService.getAllUsers();
 
-  if (!(login && password && age)) {
-    res.status(400).json({ message: 'Please provide all required fields' });
-
-    return;
-  }
-
-  const user: UserModel = {
-    id: uuidv4(),
-    login,
-    password,
-    age,
-    isDeleted: false,
+      if (users.length) {
+        res.status(200).json({ users });
+      } else {
+        next(new NotFoundError());
+      }
+    } catch (e) {
+      next(e);
+    }
   };
 
-  db.users = [...db.users, user];
+  create = async (req: ValidatedRequest<UserRequestSchemaModel>, res: Response, next: NextFunction) => {
+    const { login, age, password }: UserModel = req.body;
 
-  res.status(201).json({ id: user.id, message: 'User successfully created' });
-};
+    try {
+      const user = await this.userService.createUser({ login, age, password });
 
-const update = (req: Request, res: Response) => {
-  const { login, age, password }: UserModel = req.body;
+      res.status(201).json({ userId: user.get('id'), message: 'User successfully created' });
+    } catch (e) {
+      next(e);
+    }
+  };
 
-  const userToUpdate = db.users.find((user) => user.id === req.params.id);
+  update = async (req: Request, res: Response, next: NextFunction) => {
+    const { login, age, password }: UserModel = req.body;
 
-  if (userToUpdate) {
-    const updatedUser: UserModel = {
-      ...userToUpdate,
-      login,
-      password,
-      age,
-    };
+    try {
+      const [affectedCount] = await this.userService.updateUser({ login, age, password, id: req.params.id });
 
-    res.status(200).json({ id: updatedUser.id, message: 'User successfully updated' });
-  } else {
-    res.status(404).json({ message: 'User not found' });
-  }
-};
+      if (!affectedCount) {
+        next(new NotFoundError());
+      }
 
-const remove = (req: Request, res: Response) => {
-  db.users = db.users.map((user) => (user.id === req.params.id ? { ...user, isDeleted: true } : user));
+      res.status(200).json({ message: 'User successfully updated' });
+    } catch (e) {
+      next(e);
+    }
+  };
 
-  res.status(200).json({ message: 'User has been mark for deletion' });
-};
+  remove = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      await this.userService.removeUser({ id: req.params.id });
 
-const suggest = (req: Request, res: Response) => {
-  const { loginSubstring, limit = 5 }: SuggestRequestQueryModel = req.query;
+      res.status(200).json({ message: 'User successfully updated' });
+    } catch (e) {
+      next(e);
+    }
+  };
 
-  const suggestedUsers = loginSubstring
-    ? [
-        ...db.users.filter(({ login }) => login.toLowerCase().includes(loginSubstring.toLowerCase())).slice(0, limit),
-      ].sort((a, b) => (a.login > b.login ? 1 : -1))
-    : [];
+  suggest = async (req: Request, res: Response, next: NextFunction) => {
+    const { loginSubstring = '', limit = 0 }: SuggestRequestQueryModel = req.query;
 
-  res.status(200).json({ users: suggestedUsers });
-};
+    try {
+      const users = await this.userService.suggest({ loginSubstring, limit });
 
-export { create, update, remove, suggest };
+      res.status(200).json({ users });
+    } catch (e) {
+      next(e);
+    }
+  };
+}
