@@ -1,8 +1,7 @@
 import { injectable } from 'inversify';
 import { Op } from 'sequelize';
 
-import type { CreateUserModel, RemoveUserModel, UpdateUserModel } from '../interfaces/User';
-import type { SuggestUserModel } from '../interfaces/User';
+import type { CreateUserModel, RemoveUserModel, SuggestUserModel, UpdateUserModel } from '../interfaces/User';
 import { User } from '../models/User';
 
 @injectable()
