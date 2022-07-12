@@ -1,7 +1,7 @@
 import { injectable } from 'inversify';
 
 import type { GroupModel } from '../interfaces/Group';
-import { Group } from '../models/Group';
+import { Group } from '../models';
 
 @injectable()
 export class GroupService {
