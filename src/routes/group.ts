@@ -14,6 +14,7 @@ router.get('/', groupController.getAll);
 router.get('/:id', groupController.getById);
 router.put('/:id', validator.body(bodySchema), groupController.update);
 router.delete('/:id', groupController.remove);
+router.post('/:id/user', groupController.addUsersToGroup);
 
 const groupRoutePath = `${API_PREFIX_V1}/group`;
 
