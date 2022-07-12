@@ -4,6 +4,7 @@ import status from 'http-status';
 import { inject, injectable } from 'inversify';
 
 import type { GroupModel } from '../interfaces/Group';
+import type { UserGroupModel } from '../interfaces/UserGroup';
 import { NotFoundError } from '../services/error-handlers.service';
 import { GroupService } from '../services/group.service';
 import type { GroupRequestSchemaModel } from '../validators/group';
@@ -65,6 +66,19 @@ export class GroupController {
       const group = await this.groupService.getGroupById(req.params.id);
 
       res.json(group);
+    } catch (e) {
+      next(e);
+    }
+  };
+
+  addUsersToGroup = async (req: Request, res: Response, next: NextFunction) => {
+    const { userIds }: UserGroupModel = req.body;
+    const groupId = req.params.id;
+
+    try {
+      await this.groupService.addUsersToGroup(userIds, groupId);
+
+      res.status(200).json({ message: 'Users successfully added to group' });
     } catch (e) {
       next(e);
     }
