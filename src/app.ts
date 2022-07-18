@@ -8,6 +8,7 @@ const app = express();
 
 app.disable('x-powered-by');
 app.use(express.json());
+app.use(ErrorHandlers.allRequestsLogger);
 app.use(userRoutePath, userRoutes);
 app.use(groupRoutePath, groupRoutes);
 app.use(ErrorHandlers.handleErrors);

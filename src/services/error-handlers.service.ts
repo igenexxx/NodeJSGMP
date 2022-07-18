@@ -38,6 +38,18 @@ export const processErrorHandler = () => {
   });
 };
 
+export const allRequestsLogger = (req: Request, res: Response, next: NextFunction) => {
+  // TODO: didn't get the requirements:
+  // Add express middleware which will log which service method has been invoked and which arguments have been passed to it.
+  // name of the function? arguments - params? or req and res?
+  console.log('Arguments:');
+  console.log('Method:', req.method);
+  console.log('Request:', req);
+  console.log('Response:', res);
+
+  next();
+};
+
 export const handleErrors = (error: BaseError | Error, req: Request, res: Response, next: NextFunction) => {
   // TODO: substitute with separate middleware
   console.log(error);
