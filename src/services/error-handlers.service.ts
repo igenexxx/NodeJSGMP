@@ -1,5 +1,9 @@
 import type { NextFunction, Request, Response } from 'express';
+import expressWinston from 'express-winston';
 import status from 'http-status';
+import winston from 'winston';
+
+import { loggerEmitter } from '../config/inversify.config';
 
 class BaseError extends Error {
   constructor(public statusCode: number, message: string) {
@@ -39,20 +43,15 @@ export const processErrorHandler = () => {
 };
 
 export const allRequestsLogger = (req: Request, res: Response, next: NextFunction) => {
-  // TODO: didn't get the requirements:
-  // Add express middleware which will log which service method has been invoked and which arguments have been passed to it.
-  // name of the function? arguments - params? or req and res?
-  console.log('Arguments:');
-  console.log('Method:', req.method);
-  console.log('Request:', req);
-  console.log('Response:', res);
+  console.log('LOGGER EMITTER');
+  loggerEmitter.on('log', console.log);
 
   next();
 };
 
 export const handleErrors = (error: BaseError | Error, req: Request, res: Response, next: NextFunction) => {
   // TODO: substitute with separate middleware
-  console.log(error);
+  console.log('HANDLE ERRORS', error);
 
   if (error instanceof BaseError) {
     res.status(error.statusCode).json({
@@ -64,3 +63,8 @@ export const handleErrors = (error: BaseError | Error, req: Request, res: Respon
 
   next();
 };
+
+export const errorLogger = expressWinston.errorLogger({
+  transports: [new winston.transports.Console()],
+  format: winston.format.combine(winston.format.colorize(), winston.format.json()),
+});

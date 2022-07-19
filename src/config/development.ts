@@ -6,6 +6,6 @@ export default {
     dialect: 'postgres',
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
-    // logging: console.log,
+    logging: false,
   },
 };
