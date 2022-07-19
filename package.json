@@ -60,6 +60,7 @@
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "express-joi-validation": "^5.0.1",
+    "express-winston": "^4.2.0",
     "http-status": "^1.5.2",
     "inversify": "^6.0.1",
     "pg": "^8.7.3",
@@ -67,6 +68,8 @@
     "reflect-metadata": "^0.1.13",
     "sequelize": "^6.20.1",
     "sqlite3": "^5.0.8",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "winston": "^3.8.1",
+    "winston-express": "^0.1.1"
   }
 }
