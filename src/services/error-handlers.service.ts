@@ -43,7 +43,6 @@ export const processErrorHandler = () => {
 };
 
 export const allRequestsLogger = (req: Request, res: Response, next: NextFunction) => {
-  console.log('LOGGER EMITTER');
   loggerEmitter.on('log', console.log);
 
   next();
