@@ -426,7 +426,8 @@
     "node/prefer-global/url": ["error", "always"],
     "node/prefer-promises/dns": "error",
     "node/prefer-promises/fs": "error",
-    "node/no-unsupported-features/es-syntax": ["off", { "ignores": ["modules"], "version": ">=16.0.0" }],
+    "node/no-unsupported-features/es-syntax": ["off"],
+    "node/no-unsupported-features/es-builtins": ["off"],
     "node/no-missing-import": "off"
   },
   "globals": {
