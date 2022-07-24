@@ -9,12 +9,10 @@ const app = express();
 
 app.disable('x-powered-by');
 app.use(express.json());
-// @ts-ignore
 app.use(allRequestsLogger);
 app.use(userRoutePath, userRoutes);
 app.use(groupRoutePath, groupRoutes);
 app.use('*', ErrorHandlers.notFound);
-// @ts-ignore
 app.use(ErrorHandlers.errorLogger);
 app.use(ErrorHandlers.handleErrors);
 
