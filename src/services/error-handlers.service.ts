@@ -1,9 +1,8 @@
 import type { NextFunction, Request, Response } from 'express';
-import expressWinston from 'express-winston';
 import status from 'http-status';
-import winston from 'winston';
 
 import { loggerEmitter } from '../config/inversify.config';
+import { logger } from './winston-logger';
 
 class BaseError extends Error {
   constructor(public statusCode: number, message: string) {
@@ -43,15 +42,14 @@ export const processErrorHandler = () => {
 };
 
 export const allRequestsLogger = (req: Request, res: Response, next: NextFunction) => {
-  loggerEmitter.on('log', console.log);
+  loggerEmitter.on('log', (log) => {
+    (req as Request & { log: string }).log = log;
+  });
 
   next();
 };
 
 export const handleErrors = (error: BaseError | Error, req: Request, res: Response, next: NextFunction) => {
-  // TODO: substitute with separate middleware
-  console.log('HANDLE ERRORS', error);
-
   if (error instanceof BaseError) {
     res.status(error.statusCode).json({
       message: error.message,
@@ -65,10 +63,8 @@ export const notFound = (req: Request, res: Response, next: NextFunction) => {
   next(new NotFoundError());
 };
 
-export const errorLogger = expressWinston.errorLogger({
-  transports: [new winston.transports.Console()],
-  format: winston.format.combine(winston.format.colorize(), winston.format.json()),
-  meta: false,
-  metaField: '',
-  msg: 'HTTP {{req.method}} {{req.url}} {{res.statusCode}} {{res.responseTime}}ms',
-});
+export const errorLogger = (error: Error, req: Request, res: Response, next: NextFunction) => {
+  logger.error(`${(req as Request & { log: string }).log} ${error}`);
+
+  next(error);
+};
