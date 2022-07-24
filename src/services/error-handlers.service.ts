@@ -56,14 +56,19 @@ export const handleErrors = (error: BaseError | Error, req: Request, res: Respon
     res.status(error.statusCode).json({
       message: error.message,
     });
+  } else {
+    res.status(status.INTERNAL_SERVER_ERROR).json({ message: status[status.INTERNAL_SERVER_ERROR] });
   }
+};
 
-  res.status(status.INTERNAL_SERVER_ERROR).json({ message: status[status.INTERNAL_SERVER_ERROR] });
-
-  next();
+export const notFound = (req: Request, res: Response, next: NextFunction) => {
+  next(new NotFoundError());
 };
 
 export const errorLogger = expressWinston.errorLogger({
   transports: [new winston.transports.Console()],
   format: winston.format.combine(winston.format.colorize(), winston.format.json()),
+  meta: false,
+  metaField: '',
+  msg: 'HTTP {{req.method}} {{req.url}} {{res.statusCode}} {{res.responseTime}}ms',
 });

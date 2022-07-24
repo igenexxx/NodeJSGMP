@@ -12,6 +12,7 @@ app.use(express.json());
 app.use(allRequestsLogger);
 app.use(userRoutePath, userRoutes);
 app.use(groupRoutePath, groupRoutes);
+app.use('*', ErrorHandlers.notFound);
 app.use(ErrorHandlers.errorLogger);
 app.use(ErrorHandlers.handleErrors);
 
