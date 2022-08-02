@@ -21,6 +21,12 @@ export class NotFoundError extends BaseError {
   }
 }
 
+export class ForbiddenError extends BaseError {
+  constructor(message = status[status.FORBIDDEN] as string) {
+    super(status.FORBIDDEN, message);
+  }
+}
+
 export class ServerError extends BaseError {
   constructor(message = status[status.INTERNAL_SERVER_ERROR] as string) {
     super(status.INTERNAL_SERVER_ERROR, message);
