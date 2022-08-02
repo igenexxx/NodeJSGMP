@@ -12,8 +12,10 @@ export interface SuggestRequestQueryModel {
 }
 
 export type CreateUserModel = Pick<UserModel, 'login' | 'password' | 'age'>;
-export type UpdateUserModel = Pick<UserModel, 'login' | 'password' | 'age' | 'id'>;
+export type UpdateUserModel = Omit<UserModel, 'isDeleted'>;
 export type RemoveUserModel = Pick<UserModel, 'id'>;
+export type LoginUserModel = Pick<UserModel, 'login' | 'password'>;
+
 export interface SuggestUserModel {
   loginSubstring: string;
   limit: number;

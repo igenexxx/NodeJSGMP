@@ -14,6 +14,7 @@ router.get('/', userController.getAll);
 router.put('/:id', validator.body(bodySchema), userController.update);
 router.get('/suggest', userController.suggest);
 router.delete('/:id', userController.remove);
+router.post('/login', userController.login);
 
 const userRoutePath = `${API_PREFIX_V1}/user`;
 
