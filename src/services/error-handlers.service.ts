@@ -27,6 +27,12 @@ export class ForbiddenError extends BaseError {
   }
 }
 
+export class Unauthorized extends BaseError {
+  constructor(message = status[status.UNAUTHORIZED] as string) {
+    super(status.UNAUTHORIZED, message);
+  }
+}
+
 export class ServerError extends BaseError {
   constructor(message = status[status.INTERNAL_SERVER_ERROR] as string) {
     super(status.INTERNAL_SERVER_ERROR, message);

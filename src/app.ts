@@ -11,7 +11,7 @@ const app = express();
 
 app.disable('x-powered-by');
 app.use(express.json());
-app.use(authMiddleware(process.env.SECRET as string));
+app.use(authMiddleware({ secret: process.env.SECRET as string, bypassUrls: [`${userRoutePath}/login`] }));
 app.use(allRequestsLogger);
 app.use(userRoutePath, executionTimeLogger(userRoutes));
 app.use(groupRoutePath, executionTimeLogger(groupRoutes));

@@ -108,8 +108,9 @@
       "types": ["node"],
       "typeRoots": [
         "./types"
-      ]
-    }
+      ],
+    },
+    "files": true
   },
   "exclude": ["node_modules"]
 }
