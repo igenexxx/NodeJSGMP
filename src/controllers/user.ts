@@ -5,6 +5,7 @@ import { inject, injectable } from 'inversify';
 import type { SuggestRequestQueryModel, UserModel } from '../interfaces/User';
 import { NotFoundError } from '../services/error-handlers.service';
 import { UserService } from '../services/user.service';
+import { signJWT } from '../utils/auth.util';
 import type { UserRequestSchemaModel } from '../validators/user';
 
 @injectable()
@@ -70,6 +71,24 @@ export class UserController {
       const users = await this.userService.suggest({ loginSubstring, limit });
 
       res.status(200).json({ users });
+    } catch (e) {
+      next(e);
+    }
+  };
+
+  login = async (req: Request, res: Response, next: NextFunction) => {
+    const { login, password }: UserModel = req.body;
+
+    try {
+      const user = await this.userService.validateUser({ login, password });
+
+      if (user) {
+        const token = await signJWT(user.get('login'), process.env.SECRET as string);
+
+        res.status(200).json({ token, message: 'User successfully logged in' });
+      } else {
+        next(new NotFoundError());
+      }
     } catch (e) {
       next(e);
     }

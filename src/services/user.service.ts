@@ -2,6 +2,7 @@ import { injectable } from 'inversify';
 import { Op } from 'sequelize';
 
 import type { CreateUserModel, RemoveUserModel, SuggestUserModel, UpdateUserModel } from '../interfaces/User';
+import type { LoginUserModel } from '../interfaces/User';
 import { User } from '../models';
 
 @injectable()
@@ -38,5 +39,9 @@ export class UserService {
       limit,
       order: ['login'],
     });
+  }
+
+  async validateUser({ login, password }: LoginUserModel) {
+    return await User.findOne({ where: { login, password } });
   }
 }

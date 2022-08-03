@@ -46,7 +46,7 @@
         "format": ["PascalCase"],
         "suffix": ["Model"],
         "filter": {
-          "regex": "^(State|Window|Actions)$",
+          "regex": "^(State|Window|Actions|Request)$",
           "match": false
         }
       },
