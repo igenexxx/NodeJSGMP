@@ -1,3 +1,4 @@
+import cors from 'cors';
 import express from 'express';
 
 import { groupRoutePath, groupRoutes } from './routes/group';
@@ -10,6 +11,7 @@ import { executionTimeLogger } from './services/performance.service';
 const app = express();
 
 app.disable('x-powered-by');
+app.use(cors());
 app.use(express.json());
 app.use(authMiddleware({ secret: process.env.SECRET as string, bypassUrls: [`${userRoutePath}/login`] }));
 app.use(allRequestsLogger);
