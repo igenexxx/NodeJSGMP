@@ -1,8 +1,11 @@
 import type { NextFunction, Request, Response } from 'express';
 import status from 'http-status';
+import { interfaces } from 'inversify';
 
-import { loggerEmitter } from '../config/inversify.config';
+import { getMethods } from '../utils/objects.util';
 import { logger } from './winston-logger';
+import Context = interfaces.Context;
+import EventEmitter from 'events';
 
 class BaseError extends Error {
   constructor(public statusCode: number, message: string) {
@@ -53,14 +56,6 @@ export const processErrorHandler = () => {
   });
 };
 
-export const allRequestsLogger = (req: Request, res: Response, next: NextFunction) => {
-  loggerEmitter.on('log', (log) => {
-    (req as Request & { log: string }).log = log;
-  });
-
-  next();
-};
-
 export const handleErrors = (error: BaseError | Error, req: Request, res: Response, next: NextFunction) => {
   if (error instanceof BaseError) {
     res.status(error.statusCode).json({
@@ -79,4 +74,33 @@ export const errorLogger = (error: Error, req: Request, res: Response, next: Nex
   logger.error(`${(req as Request & { log: string }).log} ${error}`);
 
   next(error);
+};
+
+class LogEmitter extends EventEmitter {}
+export const loggerEmitter = new LogEmitter();
+
+export const allRequestsLogger = (req: Request, res: Response, next: NextFunction) => {
+  loggerEmitter.on('log', (log) => {
+    (req as Request & { log: string }).log = log;
+  });
+
+  next();
+};
+
+export const loggerActivator = <T extends new (...args: any) => any>(context: Context, instance: InstanceType<T>) => {
+  const methods = getMethods(instance);
+  const handler = {
+    apply(target: { apply: (arg0: any, arg1: any) => any; name: string }, thisArgument: any, argumentsList: any) {
+      loggerEmitter.emit('log', instance.constructor.name, target.name, argumentsList);
+
+      return target.apply(thisArgument, argumentsList);
+    },
+  };
+
+  methods.forEach((method) => {
+    // @ts-ignore
+    instance[method] = new Proxy(instance[method], handler);
+  });
+
+  return instance;
 };

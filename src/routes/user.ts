@@ -1,13 +1,13 @@
 import { Router } from 'express';
 
-import { myContainer } from '../config/inversify.config';
+import { container } from '../config/inversify.config';
 import { API_PREFIX_V1 } from '../config/router.config';
 import { UserController } from '../controllers/user';
 import { bodySchema, validator } from '../validators/user';
 
 const router = Router();
 
-const userController = myContainer.get(UserController);
+const userController = container.get(UserController);
 
 router.post('/', validator.body(bodySchema), userController.create);
 router.get('/', userController.getAll);

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { myContainer } from '../config/inversify.config';
+import { container } from '../config/inversify.config';
 import { API_PREFIX_V1 } from '../config/router.config';
 import { GroupController } from '../controllers/group';
 import { authCheckMiddleware } from '../services/auth.service';
@@ -8,7 +8,7 @@ import { bodySchema, validator } from '../validators/group';
 
 const router = Router();
 
-const groupController = myContainer.get(GroupController);
+const groupController = container.get(GroupController);
 
 router.post('/', validator.body(bodySchema), groupController.create);
 router.get('/', groupController.getAll);
