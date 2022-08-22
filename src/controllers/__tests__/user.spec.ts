@@ -2,24 +2,17 @@ import request from 'supertest';
 
 import 'reflect-metadata';
 import { app } from '../../app';
+import { container } from '../../config/inversify.config';
 import { mockUserService } from '../../mocks/services/mockUserService';
-import { UserModule } from '../../modules/user.module';
 import { userRoutePath } from '../../routes/user';
 import { UserService } from '../../services/user.service';
-import { createTestingModule } from '../../utils/test.util';
 import { UserController } from '../user';
 
 describe('User', () => {
   let userController: UserController;
-  let userService: UserService;
 
   beforeEach(() => {
-    const moduleRef = createTestingModule(UserModule);
-
-    moduleRef.rebind(UserService).toConstantValue(mockUserService);
-    userController = moduleRef.get<UserController>(UserController);
-    userService = moduleRef.get<UserService>(UserService);
-    console.log(userService);
+    userController = container.get<UserController>(UserController);
     console.log(userController);
   });
 
@@ -28,8 +21,15 @@ describe('User', () => {
   });
 
   it('should return list of users', async () => {
-    const response = await request(app).get(userRoutePath).send();
+    const testApp = request(app);
+
+    container.rebind(UserService).toConstantValue(mockUserService);
+
+    const response = await testApp.get(userRoutePath).send();
 
     expect(response.status).toBe(200);
+    // const userService = container.get<UserService>(UserService);
+    // console.log(userService);
+    // expect(true).toBe(false);
   });
 });

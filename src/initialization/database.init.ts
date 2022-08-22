@@ -11,6 +11,8 @@ const config = process.env.NODE_ENV === 'development' ? development : local;
 
 const sequelize = new Sequelize(config.database as Options);
 
+console.log(process.env.NODE_ENV);
+
 (async () => {
   await sequelize.sync();
 })();
