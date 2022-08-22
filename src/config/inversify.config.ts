@@ -14,12 +14,8 @@ const loggerEmitter = new LogEmitter();
 
 const loggerActivator = <T extends new (...args: any) => any>(context: Context, instance: InstanceType<T>) => {
   const methods = getMethods(instance);
-  let handler = {
-    apply: function (
-      target: { apply: (arg0: any, arg1: any) => any; name: string },
-      thisArgument: any,
-      argumentsList: any,
-    ) {
+  const handler = {
+    apply(target: { apply: (arg0: any, arg1: any) => any; name: string }, thisArgument: any, argumentsList: any) {
       loggerEmitter.emit('log', instance.constructor.name, target.name, argumentsList);
 
       return target.apply(thisArgument, argumentsList);
