@@ -1,6 +1,7 @@
 import EventEmitter from 'events';
 import { Container, interfaces } from 'inversify';
 
+import 'reflect-metadata';
 import { GroupController } from '../controllers/group';
 import { UserController } from '../controllers/user';
 import { GroupService } from '../services/group.service';

@@ -1,10 +1,14 @@
-import supertest from 'supertest';
+import { myContainer } from '../../config/inversify.config';
+import { UserController } from '../user';
 
-import 'reflect-metadata';
-import { app } from '../../app.js';
+describe('User', () => {
+  let user: UserController;
 
-describe('some value', () => {
-  it('should ', () => {
-    supertest(app).post('/api/users').send({}).expect(200);
+  beforeEach(() => {
+    user = myContainer.get(UserController);
+  });
+
+  it('should be defined', () => {
+    expect(user).toBeDefined();
   });
 });
