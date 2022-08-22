@@ -24,7 +24,6 @@
     "url": "https://github.com/igenexxx/NodeJSGMP/issues"
   },
   "homepage": "https://github.com/igenexxx/NodeJSGMP#readme",
-  "type": "module",
   "devDependencies": {
     "@types/config": "^0.0.41",
     "@types/cors": "^2.8.12",

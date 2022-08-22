@@ -111,8 +111,8 @@
   //      "./types",
   //      "./node_modules/@types"
   //    ]
-    }
-    //"files": true
+    },
+    "files": true
   },
   "exclude": ["node_modules"]
 }
