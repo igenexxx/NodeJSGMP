@@ -15,6 +15,7 @@ export class UserController {
   getAll = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const users = await this.userService.getAllUsers();
+      console.log(users);
 
       if (users.length) {
         res.status(200).json({ users });

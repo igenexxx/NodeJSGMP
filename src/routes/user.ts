@@ -10,12 +10,12 @@ const router = Router();
 @injectable()
 class UserRouter {
   constructor(@inject(UserController) private userController: UserController) {
-    router.post('/', validator.body(bodySchema), userController.create);
-    router.get('/', userController.getAll);
-    router.put('/:id', validator.body(bodySchema), userController.update);
-    router.get('/suggest', userController.suggest);
-    router.delete('/:id', userController.remove);
-    router.post('/login', userController.login);
+    router.post('/', validator.body(bodySchema), this.userController.create);
+    router.get('/', this.userController.getAll);
+    router.put('/:id', validator.body(bodySchema), this.userController.update);
+    router.get('/suggest', this.userController.suggest);
+    router.delete('/:id', this.userController.remove);
+    router.post('/login', this.userController.login);
   }
 
   getRouter() {

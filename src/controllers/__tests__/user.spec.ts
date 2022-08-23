@@ -1,19 +1,27 @@
+import type { Container } from 'inversify';
 import request from 'supertest';
 
 import 'reflect-metadata';
-import { app } from '../../app';
-import { container } from '../../config/inversify.config';
+import { loadApp } from '../../app';
 import { mockUserService } from '../../mocks/services/mockUserService';
+import { GroupModule } from '../../modules/group.module';
+import { UserModule } from '../../modules/user.module';
 import { userRoutePath } from '../../routes/user';
 import { UserService } from '../../services/user.service';
+import { createTestingModule } from '../../utils/test.util';
 import { UserController } from '../user';
 
 describe('User', () => {
   let userController: UserController;
+  let moduleRef: Container;
 
   beforeEach(() => {
-    userController = container.get<UserController>(UserController);
-    console.log(userController);
+    moduleRef = createTestingModule(UserModule, GroupModule);
+    userController = moduleRef.get(UserController);
+  });
+
+  afterEach(() => {
+    moduleRef.unbindAll();
   });
 
   it('should be defined', () => {
@@ -21,15 +29,24 @@ describe('User', () => {
   });
 
   it('should return list of users', async () => {
-    const testApp = request(app);
+    moduleRef.rebind(UserService).toConstantValue({
+      ...mockUserService,
+      getAllUsers: jest
+        .fn()
+        .mockImplementation(() => Promise.resolve([{ id: 1, login: 'test', age: 20, password: 'test' }])),
+    });
+    moduleRef.rebind(UserController).toSelf();
 
-    container.rebind(UserService).toConstantValue(mockUserService);
+    await request(loadApp(moduleRef)).get(`${userRoutePath}/`).expect(200);
+  });
 
-    const response = await testApp.get(userRoutePath).send();
+  it('should return 404 status code', async () => {
+    moduleRef.rebind(UserService).toConstantValue({
+      ...mockUserService,
+      getAllUsers: jest.fn().mockImplementation(() => Promise.resolve([])),
+    });
+    moduleRef.rebind(UserController).toSelf();
 
-    expect(response.status).toBe(200);
-    // const userService = container.get<UserService>(UserService);
-    // console.log(userService);
-    // expect(true).toBe(false);
+    await request(loadApp(moduleRef)).get(`${userRoutePath}/`).expect(404);
   });
 });
