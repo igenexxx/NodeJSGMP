@@ -64,9 +64,8 @@ export class GroupController {
   getById = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const group = await this.groupService.getGroupById(req.params.id);
-      const user = req.user;
 
-      res.json({ group, user });
+      res.json({ group });
     } catch (e) {
       next(e);
     }

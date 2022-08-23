@@ -22,7 +22,7 @@ Group.init(
       unique: true,
     },
     permissions: {
-      type: ARRAY(STRING),
+      type: process.env.NODE_ENV !== 'development' ? STRING : ARRAY(STRING),
     },
   },
   { modelName: 'group', sequelize },
