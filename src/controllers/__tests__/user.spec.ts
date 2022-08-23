@@ -101,4 +101,26 @@ describe('User', () => {
       await request(loadApp(moduleRef)).get(`${userRoutePath}/suggest`).expect(200);
     });
   });
+
+  describe('login()', () => {
+    it('should return 200 status code and auth token', () => {
+      moduleRef.rebind(UserService).toConstantValue({
+        ...mockUserService,
+        validateUser: jest.fn().mockImplementation(() =>
+          Promise.resolve({
+            login: 'test_1',
+            age: 20,
+            password: 'a12345678',
+            get: jest.fn().mockImplementation(() => ({ id: 1 })),
+          }),
+        ),
+      });
+      moduleRef.rebind(UserController).toSelf();
+
+      return request(loadApp(moduleRef))
+        .post(`${userRoutePath}/login`)
+        .send({ login: 'test', password: 'test12345678' })
+        .expect(200);
+    });
+  });
 });
