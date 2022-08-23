@@ -28,25 +28,77 @@ describe('User', () => {
     expect(userController).toBeDefined();
   });
 
-  it('should return list of users', async () => {
-    moduleRef.rebind(UserService).toConstantValue({
-      ...mockUserService,
-      getAllUsers: jest
-        .fn()
-        .mockImplementation(() => Promise.resolve([{ id: 1, login: 'test', age: 20, password: 'test' }])),
-    });
-    moduleRef.rebind(UserController).toSelf();
+  describe('getAll()', () => {
+    it('should return list of users', async () => {
+      moduleRef.rebind(UserService).toConstantValue({
+        ...mockUserService,
+        getAllUsers: jest
+          .fn()
+          .mockImplementation(() => Promise.resolve([{ id: 1, login: 'test', age: 20, password: 'test' }])),
+      });
+      moduleRef.rebind(UserController).toSelf();
 
-    await request(loadApp(moduleRef)).get(`${userRoutePath}/`).expect(200);
+      await request(loadApp(moduleRef)).get(`${userRoutePath}/`).expect(200);
+    });
+
+    it('should return 404 status code', async () => {
+      moduleRef.rebind(UserService).toConstantValue({
+        ...mockUserService,
+        getAllUsers: jest.fn().mockImplementation(() => Promise.resolve([])),
+      });
+      moduleRef.rebind(UserController).toSelf();
+
+      await request(loadApp(moduleRef)).get(`${userRoutePath}/`).expect(404);
+    });
   });
 
-  it('should return 404 status code', async () => {
-    moduleRef.rebind(UserService).toConstantValue({
-      ...mockUserService,
-      getAllUsers: jest.fn().mockImplementation(() => Promise.resolve([])),
-    });
-    moduleRef.rebind(UserController).toSelf();
+  describe('create', () => {
+    it('should return 201 and user date', async () => {
+      moduleRef.rebind(UserService).toConstantValue({
+        ...mockUserService,
+        createUser: jest.fn().mockImplementation(() =>
+          Promise.resolve({
+            login: 'test_1',
+            age: 20,
+            password: 'a12345678',
+            get: jest.fn().mockImplementation(() => ({ id: 1 })),
+          }),
+        ),
+      });
+      moduleRef.rebind(UserController).toSelf();
 
-    await request(loadApp(moduleRef)).get(`${userRoutePath}/`).expect(404);
+      await request(loadApp(moduleRef))
+        .post(`${userRoutePath}/`)
+        .send({ login: 'test_1', age: 20, password: 'a12345678' })
+        .expect(201);
+    });
+
+    it('should return 400 bad request if short password', async () => {
+      await request(loadApp(moduleRef))
+        .post(`${userRoutePath}/`)
+        .send({ login: 'test_1', age: 20, password: '123' })
+        .expect(400);
+    });
+  });
+
+  describe('remove()', () => {
+    it('should return 200 ok if id is provided', async () => {
+      moduleRef.rebind(UserService).toConstantValue(mockUserService);
+      moduleRef.rebind(UserController).toSelf();
+
+      await request(loadApp(moduleRef)).delete(`${userRoutePath}/1`).expect(200);
+    });
+  });
+
+  describe('suggest()', () => {
+    it('should return 200 ok if id is provided', async () => {
+      moduleRef.rebind(UserService).toConstantValue({
+        ...mockUserService,
+        suggest: jest.fn().mockImplementation(() => Promise.resolve([{ id: 1, login: 'test' }])),
+      });
+      moduleRef.rebind(UserController).toSelf();
+
+      await request(loadApp(moduleRef)).get(`${userRoutePath}/suggest`).expect(200);
+    });
   });
 });
