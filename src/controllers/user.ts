@@ -5,7 +5,6 @@ import { inject, injectable } from 'inversify';
 import type { SuggestRequestQueryModel, UserModel } from '../interfaces/User';
 import { NotFoundError } from '../services/error-handlers.service';
 import { UserService } from '../services/user.service';
-import { signJWT } from '../utils/auth.util';
 import type { UserRequestSchemaModel } from '../validators/user';
 
 @injectable()
@@ -15,7 +14,6 @@ export class UserController {
   getAll = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const users = await this.userService.getAllUsers();
-      console.log(users);
 
       if (users.length) {
         res.status(200).json({ users });
@@ -81,11 +79,9 @@ export class UserController {
     const { login, password }: UserModel = req.body;
 
     try {
-      const user = await this.userService.validateUser({ login, password });
+      const token = await this.userService.getToken({ login, password });
 
-      if (user) {
-        const token = await signJWT(user.get('login'), process.env.SECRET as string);
-
+      if (token) {
         res.status(200).json({ token, message: 'User successfully logged in' });
       } else {
         next(new NotFoundError());
