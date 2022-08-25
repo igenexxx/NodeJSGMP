@@ -59,8 +59,6 @@ describe('User', () => {
         createUser: jest.fn().mockImplementation(() =>
           Promise.resolve({
             login: 'test_1',
-            age: 20,
-            password: 'a12345678',
             get: jest.fn().mockImplementation(() => ({ id: 1 })),
           }),
         ),
@@ -106,14 +104,7 @@ describe('User', () => {
     it('should return 200 status code and auth token', () => {
       moduleRef.rebind(UserService).toConstantValue({
         ...mockUserService,
-        validateUser: jest.fn().mockImplementation(() =>
-          Promise.resolve({
-            login: 'test_1',
-            age: 20,
-            password: 'a12345678',
-            get: jest.fn().mockImplementation(() => ({ id: 1 })),
-          }),
-        ),
+        getToken: jest.fn().mockImplementation(() => Promise.resolve('mock_token 1234567890')),
       });
       moduleRef.rebind(UserController).toSelf();
 

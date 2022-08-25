@@ -1,3 +1,4 @@
+import bcrypt from 'bcryptjs';
 import { injectable } from 'inversify';
 import { Op } from 'sequelize';
 
@@ -9,6 +10,7 @@ import type {
   UpdateUserModel,
 } from '../interfaces/User';
 import { User } from '../models';
+import { signJWT } from '../utils/auth.util';
 
 @injectable()
 export class UserService {
@@ -17,9 +19,12 @@ export class UserService {
   }
 
   async createUser({ login, password, age }: CreateUserModel) {
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(password, salt);
+
     const user: CreateUserModel = {
       login,
-      password,
+      password: passwordHash,
       age: +age,
     };
 
@@ -46,7 +51,13 @@ export class UserService {
     });
   }
 
-  async validateUser({ login, password }: LoginUserModel) {
-    return await User.findOne({ where: { login, password } });
+  async getToken({ login, password }: LoginUserModel) {
+    const candidate = await User.findOne({ where: { login } });
+
+    if (candidate) {
+      const passwordResult = await bcrypt.compare(password, candidate.get('password'));
+
+      return passwordResult ? await signJWT(candidate.get('login'), process.env.SECRET as string) : null;
+    }
   }
 }

@@ -8,5 +8,5 @@ export const mockUserService: MockUserServiceModel = {
   updateUser: jest.fn(),
   removeUser: jest.fn(),
   suggest: jest.fn(),
-  validateUser: jest.fn(),
+  getToken: jest.fn(),
 };
